@@ -10,7 +10,7 @@ Unsere gewählte Branching-Strategie basiert auf der Feature Branching Methode, 
 
 ## Definition der Branch-Typen und Verwendungszwecke
 
-![Feature-Branching](/res/branches.png)
+![Feature-Branching](/res/branches_new.png)
 
 #### Global Naming Convention: [type]/[issueId]-[Name].
 Aufgrund der verschiedenen Branch-Typen wird der Typ des Branches am Anfang definiert. Für die Zuordnung zu einem Github Issue verwenden wir die issueId im Branch-Namen. Für eine grobe Beschreibung des Branches beinhaltet der Branch-Name ebenfalls eine Kurzbeschreibung.
