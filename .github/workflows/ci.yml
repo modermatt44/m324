@@ -26,8 +26,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      - run: cd ./Code/ticketsystem
-      - run: npm install
-      - run: npm run build --if-present
-      - run: npm test
-      - run: npm run integration-tests
+          working-directory: ./Code/ticketsystem # Setzt das richtige Verzeichnis für Lock-Datei und Cache
+      - run: cd ./Code/ticketsystem && npm install  # Installiert die Abhängigkeiten
+      - run: cd ./Code/ticketsystem && npm run build --if-present  # Führt den Build-Prozess aus
+      - run: cd ./Code/ticketsystem && npm test  # Führt Unit Tests aus
+      - run: cd ./Code/ticketsystem && npm run integration-tests  # Führt Integration Tests aus
