@@ -1,14 +1,10 @@
 const express = require('express');
 const { MongoClient, ServerApiVersion } = require('mongodb');
-
 const app = express();
 app.use(express.json());
-
 module.exports = app;
-
 // MongoDB connection URI
 const uri = "mongodb+srv://admin:TxCOKizlfdVuIwj8@cluster0.7yj62.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-
 // Create a new MongoClient
 const client = new MongoClient(uri, {
     serverApi: {
@@ -17,25 +13,23 @@ const client = new MongoClient(uri, {
         deprecationErrors: true,
     }
 });
-
 // Function to run the server and connect to MongoDB
 async function run() {
     try {
         // Connect to MongoDB
         await client.connect();
         console.log("Connected to MongoDB!");
-
         // Define the POST /mitarbeiter route
-        app.post('/employee', async (req, res) => {
-            const { name, lastname, entryDate, skilllevel } = req.body;
+        app.post('/mitarbeiter', async (req, res) => {
+            const { vorname, nachname, beitrittsdatum, skilllevel } = req.body;
 
             // Check if all required fields are provided
-            if (!name || !lastname || !entryDate || skilllevel === undefined) {
+            if (!vorname || !nachname || !beitrittsdatum || skilllevel === undefined) {
                 return res.status(400).send({ error: 'Alle Felder müssen ausgefüllt werden' });
             }
 
-            // Check if the entryDate is a valid date
-            if (isNaN(Date.parse(entryDate))) {
+            // Check if the beitrittsdatum is a valid date
+            if (isNaN(Date.parse(beitrittsdatum))) {
                 return res.status(400).send({ error: 'Beitrittsdatum muss ein gültiges Datum sein' });
             }
 
@@ -46,16 +40,15 @@ async function run() {
 
             // Create a new mitarbeiter object
             const mitarbeiter = {
-                name,
-                lastname,
-                entryDate,
+                vorname,
+                nachname,
+                beitrittsdatum,
                 skilllevel
             };
-
             try {
                 // Insert the new mitarbeiter into the database
                 const database = client.db('ticketsystem');
-                const collection = database.collection('employees');
+                const collection = database.collection('mitarbeiter');
                 await collection.insertOne(mitarbeiter);
                 res.status(201).send(mitarbeiter);
             } catch (error) {
