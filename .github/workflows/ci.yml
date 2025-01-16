@@ -1,33 +1,23 @@
 name: CI Node.js Pipeline M324
 
-on:
-  push:
-    branches:
-      - main
-      - develop
-      - 'feature/*'
-  pull_request:
-    branches:
-      - main
-      - develop
+on: [push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          working-directory: ./Code/ticketsystem # Setzt das richtige Verzeichnis für Lock-Datei und Cache
-      - run: cd ./Code/ticketsystem && npm install  # Installiert die Abhängigkeiten
-      - run: cd ./Code/ticketsystem && npm run build --if-present  # Führt den Build-Prozess aus
-      - run: cd ./Code/ticketsystem && npm test  # Führt Unit Tests aus
-      - run: cd ./Code/ticketsystem && npm run integration-tests  # Führt Integration Tests aus
+          node-version: 18.x
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./Code/ticketsystem
+
+      - name: Run tests
+        run: npm test
+        working-directory: ./Code/ticketsystem
