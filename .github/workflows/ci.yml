@@ -18,6 +18,10 @@ jobs:
         run: npm install
         working-directory: ./Code/ticketsystem
 
+      - name: Build
+        run: npm run build
+        working-directory: ./Code/ticketsystem
+
       - name: Run tests
         run: npm test
         working-directory: ./Code/ticketsystem
