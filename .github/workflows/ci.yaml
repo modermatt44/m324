@@ -21,12 +21,12 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./Code/ticketsystem
+        working-directory: ./Code/ticketsystem/ticketVerwaltung
 
       - name: Build
         run: npm run build
-        working-directory: ./Code/ticketsystem
+        working-directory: ./Code/ticketsystem/ticketVerwaltung
 
       - name: Run tests
         run: npm test
-        working-directory: ./Code/ticketsystem
+        working-directory: ./Code/ticketsystem/ticketVerwaltung
