@@ -1,6 +1,11 @@
 name: CI Node.js Pipeline M324
 
-on: [push]
+on:
+  push:
+    branches:
+      - develop
+      - main
+      - 'feature/**'
 
 jobs:
   build:
