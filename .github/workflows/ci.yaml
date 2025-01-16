@@ -1,0 +1,32 @@
+name: CI Node.js Pipeline M324
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+      - 'feature/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18.x
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./Code/ticketsystem
+
+      - name: Build
+        run: npm run build
+        working-directory: ./Code/ticketsystem
+
+      - name: Run tests
+        run: npm test
+        working-directory: ./Code/ticketsystem
