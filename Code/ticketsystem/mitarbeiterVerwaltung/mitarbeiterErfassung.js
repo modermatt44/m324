@@ -26,21 +26,36 @@ async function run() {
         console.log("Connected to MongoDB!");
 
         // Define the POST /mitarbeiter route
-        app.post('/mitarbeiter', async (req, res) => {
-            const { vorname, nachname, beitrittsdatum, skilllevel } = req.body;
+        app.post('/employee', async (req, res) => {
+            const { name, lastname, entryDate, skilllevel } = req.body;
+
+            // Check if all required fields are provided
+            if (!name || !lastname || !entryDate || skilllevel === undefined) {
+                return res.status(400).send({ error: 'Alle Felder müssen ausgefüllt werden' });
+            }
+
+            // Check if the entryDate is a valid date
+            if (isNaN(Date.parse(entryDate))) {
+                return res.status(400).send({ error: 'Beitrittsdatum muss ein gültiges Datum sein' });
+            }
+
+            // Check if the skilllevel is a number between 1 and 5
+            if (skilllevel < 1 || skilllevel > 5) {
+                return res.status(400).send({ error: 'Skilllevel muss eine Zahl zwischen 1 und 5 sein' });
+            }
 
             // Create a new mitarbeiter object
             const mitarbeiter = {
-                vorname,
-                nachname,
-                beitrittsdatum,
+                name,
+                lastname,
+                entryDate,
                 skilllevel
             };
 
             try {
                 // Insert the new mitarbeiter into the database
                 const database = client.db('ticketsystem');
-                const collection = database.collection('mitarbeiter');
+                const collection = database.collection('employees');
                 await collection.insertOne(mitarbeiter);
                 res.status(201).send(mitarbeiter);
             } catch (error) {
