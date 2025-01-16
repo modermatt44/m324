@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1", // Platzhalter für Unit Tests
-    "integration-tests": "echo \"Error: no integration test specified\" && exit 0", // Platzhalter für Integration Tests
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "integration-tests": "echo \"Error: no integration test specified\" && exit 0",
     "start": "node index.js",
     "dev": "nodemon index.js",
     "build": "echo \"Building the project...\""
