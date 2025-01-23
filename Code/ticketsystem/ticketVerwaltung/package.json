@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha 'index.test.mjs'",
-    "dev": "nodemon index.js"
+    "test": "mocha index.test.mjs",
+    "dev": "nodemon index.js",
+    "build": ""
   },
   "author": "",
   "license": "ISC",
@@ -16,8 +17,8 @@
   },
   "devDependencies": {
     "chai": "^5.1.2",
-    "mocha": "^11.0.1",
-    "sinon": "^19.0.2",
+    "jest": "^29.7.0",
+    "mocha": "^11.1.0",
     "supertest": "^7.0.0"
   }
 }

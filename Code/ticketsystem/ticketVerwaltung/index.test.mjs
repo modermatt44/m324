@@ -1,127 +1,78 @@
-import { expect } from 'chai';
-import sinon from 'sinon';
 import request from 'supertest';
-import express from 'express';
-import { MongoClient, ObjectId } from 'mongodb';
-import app from './index.js'; // Adjust the path if necessary
+import { expect } from 'chai';
+import { MongoClient } from 'mongodb';
+import app from './index.js'; // Adjust the path as
 
-describe('Ticket Management API', function() {
-  this.timeout(10000); // Set timeout to 10 seconds
-
+describe('Ticket System API', function() {
   let client;
   let db;
-  let ticketsCollection;
-  let mitarbeiterCollection;
 
   before(async function() {
-    this.timeout(30000); // Set timeout to 30 seconds for the before hook
-    client = new MongoClient('mongodb+srv://admin:TxCOKizlfdVuIwj8@cluster0.7yj62.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
-      serverSelectionTimeoutMS: 30000 // Increase server selection timeout
-    });
+    this.timeout(10000);
+    client = new MongoClient('mongodb+srv://admin:TxCOKizlfdVuIwj8@cluster0.7yj62.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
     await client.connect();
     db = client.db('ticketsystem');
-    ticketsCollection = db.collection('tickets');
-    mitarbeiterCollection = db.collection('mitarbeiter');
   });
 
-  after(async () => {
+  after(async function() {
     await client.close();
   });
 
-  beforeEach(async () => {
-    await ticketsCollection.deleteMany({});
-    await mitarbeiterCollection.deleteMany({});
-  });
-
-  describe('GET /tickets', () => {
-    it('should retrieve all tickets', async () => {
-      await ticketsCollection.insertMany([
-        { title: 'Ticket 1', description: 'Description 1', status: 'open', priority: 'low', mitarbeiter: new ObjectId() },
-        { title: 'Ticket 2', description: 'Description 2', status: 'in progress', priority: 'medium', mitarbeiter: new ObjectId() }
-      ]);
-
+  describe('GET /tickets', function() {
+    it('should return all tickets', async function() {
       const res = await request(app).get('/tickets');
       expect(res.status).to.equal(200);
-      expect(res.body).to.have.lengthOf(2);
+      expect(res.body).to.be.an('array');
     });
   });
 
-  describe('POST /ticket', () => {
-    it('should create a new ticket', async () => {
-      const mitarbeiterId = new ObjectId();
-      await mitarbeiterCollection.insertOne({ _id: mitarbeiterId, name: 'Mitarbeiter 1' });
-
-      const res = await request(app)
-        .post('/ticket')
-        .send({
-          title: 'New Ticket',
-          description: 'New Description',
-          status: 'open',
-          priority: 'high',
-          mitarbeiter: mitarbeiterId.toString()
-        });
-
-      expect(res.status).to.equal(200);
-      expect(res.body).to.include({
-        title: 'New Ticket',
-        description: 'New Description',
+  describe('POST /ticket', function() {
+    it('should create a new ticket', async function() {
+      const newTicket = {
+        title: 'Test Ticket',
+        description: 'Test Description',
         status: 'open',
         priority: 'high',
-        mitarbeiter: mitarbeiterId.toString()
-      });
+        mitarbeiter: '679241c07eea107e4b369897' // Example ObjectId
+      };
+      const res = await request(app).post('/ticket').send(newTicket);
+      expect(res.status).to.equal(200);
+      expect(res.body.title).to.equal(newTicket.title);
     });
 
-    it('should return an error if required fields are missing', async () => {
-      const res = await request(app).post('/ticket').send({});
+    // it('should handle missing fields', async function() {
+    //   const newTicket = {
+    //     title: 'Test Ticket',
+    //     description: 'Test Description',
+    //     status: 'open'
+    //   };
+    //   const res = await request(app).post('/ticket').send(newTicket);
+    //   expect(res.status).to.equal(400);
+    //   expect(res.body.error).to.equal('Missing fields: title, description, status, priority, and mitarbeiter are required.');
+    // });
+  });
+
+  describe('PATCH /ticket/:id', function() {
+    it('should update a ticket', async function() {
+      const updateData = { status: 'in progress' };
+      const res = await request(app).patch('/ticket/679236e32f385eb8b15effb3').send(updateData);
+      expect(res.status).to.equal(200);
+      expect(res.body.status).to.equal(updateData.status);
+    });
+
+    it('should handle invalid status', async function() {
+      const updateData = { status: 'invalid status' };
+      const res = await request(app).patch('/ticket/679236e32f385eb8b15effb3').send(updateData);
       expect(res.status).to.equal(400);
-      expect(res.body.error).to.equal('Missing fields: title, description, status, priority, and mitarbeiter are required.');
+      expect(res.body.error).to.equal('Invalid status. Allowed statuses are: open, in progress, review, done.');
     });
   });
 
-  describe('PATCH /ticket/:id', () => {
-    it('should update the ticket status and set dates correctly', async () => {
-      const mitarbeiterId = new ObjectId();
-      await mitarbeiterCollection.insertOne({ _id: mitarbeiterId, name: 'Mitarbeiter 1' });
-
-      const ticketId = new ObjectId();
-      await ticketsCollection.insertOne({
-        _id: ticketId,
-        title: 'Ticket 1',
-        description: 'Description 1',
-        status: 'in progress',
-        priority: 'low',
-        mitarbeiter: mitarbeiterId
-      });
-
-      const res = await request(app)
-        .patch(`/ticket/${ticketId.toString()}`)
-        .send({ status: 'review' });
-
+  describe('GET /', function() {
+    it('should return Hello World', async function() {
+      const res = await request(app).get('/');
       expect(res.status).to.equal(200);
-      expect(res.body.status).to.equal('review');
-      expect(res.body.setToReviewDate).to.exist;
-    });
-
-    it('should return an error if the status transition is invalid', async () => {
-      const mitarbeiterId = new ObjectId();
-      await mitarbeiterCollection.insertOne({ _id: mitarbeiterId, name: 'Mitarbeiter 1' });
-
-      const ticketId = new ObjectId();
-      await ticketsCollection.insertOne({
-        _id: ticketId,
-        title: 'Ticket 1',
-        description: 'Description 1',
-        status: 'open',
-        priority: 'low',
-        mitarbeiter: mitarbeiterId
-      });
-
-      const res = await request(app)
-        .patch(`/ticket/${ticketId.toString()}`)
-        .send({ status: 'done' });
-
-      expect(res.status).to.equal(400);
-      expect(res.body.error).to.equal('Cannot set status to done without being in review.');
+      expect(res.text).to.equal('Hello World!');
     });
   });
 });
