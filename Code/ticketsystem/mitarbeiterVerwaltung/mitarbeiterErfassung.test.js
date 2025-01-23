@@ -17,7 +17,7 @@ describe('POST /mitarbeiter', () => {
     });
 
     afterEach(async () => {
-        await db.collection('mitarbeiter').deleteMany({});
+        await db.collection('mitarbeiter').deleteMany({ vorname: 'John', nachname: 'Doe' });
     });
 
     /**
