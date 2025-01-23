@@ -23,18 +23,36 @@ jobs:
         with:
           node-version: 18.x
 
-      - name: Install dependencies
+      # Build and test for the first ticketsystem directory
+      - name: Install dependencies for ticketsystem
         run: npm install
         working-directory: ./Code/ticketsystem
 
-      - name: Build
+      - name: Build ticketsystem
         run: npm run build
         working-directory: ./Code/ticketsystem
 
-      - name: Run tests
+      - name: Run tests for ticketsystem
         run: npm test
         working-directory: ./Code/ticketsystem
 
-      - name: Run integration tests
+      - name: Run integration tests for ticketsystem
         run: npm run integration-tests
         working-directory: ./Code/ticketsystem
+
+      # Build and test for the ticketsystem/mitarbeiterAuslesen directory
+      - name: Install dependencies for ticketsystem/mitarbeiterAuslesen
+        run: npm install
+        working-directory: ./Code/ticketsystem/mitarbeiterAuslesen
+
+      - name: Build ticketsystem/mitarbeiterAuslesen
+        run: npm run build
+        working-directory: ./Code/ticketsystem/mitarbeiterAuslesen
+
+      - name: Run tests for ticketsystem/mitarbeiterAuslesen
+        run: npm test
+        working-directory: ./Code/ticketsystem/mitarbeiterAuslesen
+
+      - name: Run integration tests for ticketsystem/mitarbeiterAuslesen
+        run: npm run integration-tests
+        working-directory: ./Code/ticketsystem/mitarbeiterAuslesen
