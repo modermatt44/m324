@@ -33,7 +33,7 @@ jobs:
         working-directory: ./Code/ticketsystem
 
       - name: Run Jest tests for ticketsystem
-        run: npm testjest
+        run: npm run testjest
         working-directory: ./Code/ticketsystem
 
       - name: Run mocha tests for ticketsystem
