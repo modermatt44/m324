@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: 18.x
 
-      # Build and test for the first ticketsystem directory
+      # Build and test
       - name: Install dependencies for ticketsystem
         run: npm install
         working-directory: ./Code/ticketsystem
@@ -32,27 +32,15 @@ jobs:
         run: npm run build
         working-directory: ./Code/ticketsystem
 
-      - name: Run tests for ticketsystem
-        run: npm test
+      - name: Run Jest tests for ticketsystem
+        run: npm testjest
         working-directory: ./Code/ticketsystem
 
-      - name: Run integration tests for ticketsystem
-        run: npm run integration-tests
+      - name: Run mocha tests for ticketsystem
+        run: npm run testmocha
         working-directory: ./Code/ticketsystem
 
-      # Build and test for the ticketsystem/mitarbeiterAuslesen directory
-      - name: Install dependencies for ticketsystem/mitarbeiterAuslesen
-        run: npm install
-        working-directory: ./Code/ticketsystem/mitarbeiterAuslesen
-
-      - name: Build ticketsystem/mitarbeiterAuslesen
+      - name: Buid Project and Deploy artifacts
         run: npm run build
-        working-directory: ./Code/ticketsystem/mitarbeiterAuslesen
+        working-directory: ./Code/ticketsystem
 
-      - name: Run tests for ticketsystem/mitarbeiterAuslesen
-        run: npm test
-        working-directory: ./Code/ticketsystem/mitarbeiterAuslesen
-
-      - name: Run integration tests for ticketsystem/mitarbeiterAuslesen
-        run: npm run integration-tests
-        working-directory: ./Code/ticketsystem/mitarbeiterAuslesen
