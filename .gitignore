@@ -1,4 +1,4 @@
 .idea
 Code/ticketsystem/.idea
-Code/ticketsystem/node_modules
-Code/ticketsystem/package-lock.json
+Code/ticketsystem/ticketVerwaltung/node_modules
+Code/ticketsystem/ticketVerwaltung/package-lock.json
