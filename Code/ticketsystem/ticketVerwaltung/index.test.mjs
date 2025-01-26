@@ -1,17 +1,24 @@
 import request from 'supertest';
 import { expect } from 'chai';
 import { MongoClient } from 'mongodb';
-import app from './index.js'; // Adjust the path as
+import express from 'express';
+import router from './index.js'; // Adjust the path as needed
 
 describe('Ticket System API', function() {
   let client;
   let db;
+  let app;
 
   before(async function() {
     this.timeout(10000);
     client = new MongoClient('mongodb+srv://admin:TxCOKizlfdVuIwj8@cluster0.7yj62.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
     await client.connect();
     db = client.db('ticketsystem');
+
+    // Create an Express app and use the router
+    app = express();
+    app.use(express.json());
+    app.use('/', router);
   });
 
   after(async function() {
@@ -33,7 +40,7 @@ describe('Ticket System API', function() {
         description: 'Test Description',
         status: 'open',
         priority: 'high',
-        mitarbeiter: '679241c07eea107e4b369897' // Example ObjectId
+        mitarbeiter: '67925590839d4c1b013ba53b' // Example ObjectId
       };
       const res = await request(app).post('/ticket').send(newTicket);
       expect(res.status).to.equal(200);
@@ -55,24 +62,16 @@ describe('Ticket System API', function() {
   describe('PATCH /ticket/:id', function() {
     it('should update a ticket', async function() {
       const updateData = { status: 'in progress' };
-      const res = await request(app).patch('/ticket/679236e32f385eb8b15effb3').send(updateData);
+      const res = await request(app).patch('/ticket/679638ac6abaf899efe7e0b7').send(updateData);
       expect(res.status).to.equal(200);
       expect(res.body.status).to.equal(updateData.status);
     });
 
     it('should handle invalid status', async function() {
       const updateData = { status: 'invalid status' };
-      const res = await request(app).patch('/ticket/679236e32f385eb8b15effb3').send(updateData);
+      const res = await request(app).patch('/ticket/679638ac6abaf899efe7e0b7').send(updateData);
       expect(res.status).to.equal(400);
       expect(res.body.error).to.equal('Invalid status. Allowed statuses are: open, in progress, review, done.');
-    });
-  });
-
-  describe('GET /', function() {
-    it('should return Hello World', async function() {
-      const res = await request(app).get('/');
-      expect(res.status).to.equal(200);
-      expect(res.text).to.equal('Hello World!');
     });
   });
 });

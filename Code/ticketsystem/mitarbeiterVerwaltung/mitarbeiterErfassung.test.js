@@ -1,15 +1,22 @@
 const request = require('supertest');
-const app = require('./mitarbeiterErfassung');
+const express = require('express');
+const router = require('./mitarbeiterErfassung');
 const { MongoClient } = require('mongodb');
 
 describe('POST /mitarbeiter', () => {
     let client;
     let db;
+    let app;
 
     beforeAll(async () => {
         client = new MongoClient("mongodb+srv://admin:TxCOKizlfdVuIwj8@cluster0.7yj62.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
         await client.connect();
         db = client.db('ticketsystem');
+
+        // Create an Express app and use the router
+        app = express();
+        app.use(express.json());
+        app.use('/', router);
     });
 
     afterAll(async () => {
@@ -20,9 +27,6 @@ describe('POST /mitarbeiter', () => {
         await db.collection('mitarbeiter').deleteMany({ vorname: 'John', nachname: 'Doe' });
     });
 
-    /**
-     * Test the happy path where all required fields are provided and valid
-     */
     it('should create a new mitarbeiter when all required fields are provided', async () => {
         const response = await request(app)
             .post('/mitarbeiter')
@@ -38,9 +42,6 @@ describe('POST /mitarbeiter', () => {
         expect(response.body.nachname).toBe('Doe');
     });
 
-    /**
-     * Test the sad path where required fields are missing
-     */
     it('should return 400 if required fields are missing', async () => {
         const response = await request(app)
             .post('/mitarbeiter')
@@ -52,9 +53,6 @@ describe('POST /mitarbeiter', () => {
         expect(response.body.error).toBe('Alle Felder müssen ausgefüllt werden');
     });
 
-    /**
-     * Test the sad path where beitrittsdatum is invalid
-     */
     it('should return 400 if beitrittsdatum is invalid', async () => {
         const response = await request(app)
             .post('/mitarbeiter')
@@ -69,9 +67,6 @@ describe('POST /mitarbeiter', () => {
         expect(response.body.error).toBe('Beitrittsdatum muss ein gültiges Datum sein');
     });
 
-    /**
-     * Test the sad path where skilllevel is out of range
-     */
     it('should return 400 if skilllevel is out of range', async () => {
         const response = await request(app)
             .post('/mitarbeiter')

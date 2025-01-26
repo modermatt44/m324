@@ -1,19 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
-
-const app = express();
-const PORT = 3000;
+const router = express.Router();
 
 // MongoDB-Verbindung (ohne veraltete Optionen)
 mongoose
-    .connect('mongodb+srv://admin:TxCOKizlfdVuIwj8@cluster0.7yj62.mongodb.net/ticketsystem', {
-        serverSelectionTimeoutMS: 5000, // Verbindung innerhalb von 5 Sekunden erzwingen
-    })
+    .connect('mongodb+srv://admin:TxCOKizlfdVuIwj8@cluster0.7yj62.mongodb.net/ticketsystem')
     .then(() => console.log('MongoDB connected'))
     .catch((err) => console.error('Error connecting to MongoDB:', err));
 
 // Middleware
-app.use(express.json());
+router.use(express.json());
 
 // Mitarbeiter-Schema und -Modell
 const employeeSchema = new mongoose.Schema(
@@ -30,7 +26,7 @@ const employeeSchema = new mongoose.Schema(
 const Employee = mongoose.model('Employee', employeeSchema);
 
 // Route: Alle Mitarbeiter abrufen
-app.get('/mitarbeiter', async (req, res) => {
+router.get('/mitarbeiter', async (req, res) => {
     try {
         const employees = await Employee.find();
 
@@ -51,5 +47,4 @@ app.get('/mitarbeiter', async (req, res) => {
     }
 });
 
-// Server starten
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+module.exports = router;

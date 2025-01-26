@@ -1,8 +1,7 @@
 const express = require('express');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-
-const app = express();
-app.use(express.json());
+const router = express.Router();
+router.use(express.json());
 
 // Connection config to the MongoDB Atlas cluster
 const uri = "mongodb+srv://admin:TxCOKizlfdVuIwj8@cluster0.7yj62.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
@@ -19,7 +18,7 @@ async function run() {
     await client.connect();
     console.log("Connected to MongoDB!");
 
-    app.get('/tickets', async (req, res) => {
+    router.get('/tickets', async (req, res) => {
       try {
         const database = client.db('ticketsystem');
         const collection = database.collection('tickets');
@@ -30,7 +29,7 @@ async function run() {
       }
     });
 
-    app.post('/ticket', async (req, res) => {
+    router.post('/ticket', async (req, res) => {
       try {
         const { title, description, status, priority, mitarbeiter } = req.body;
         const allowedStatuses = ['open', 'in progress', 'review', 'done'];
@@ -62,7 +61,7 @@ async function run() {
       }
     });
 
-    app.patch('/ticket/:id', async (req, res) => {
+    router.patch('/ticket/:id', async (req, res) => {
       try {
         const { id } = req.params;
         const { status, mitarbeiter } = req.body;
@@ -104,10 +103,6 @@ async function run() {
         res.status(500).send({ error: 'Failed to update ticket. Please try again later.' });
       }
     });
-
-    app.listen(3000, () => {
-      console.log('Server is running on http://localhost:3000');
-    });
   } catch (error) {
     console.error(error);
   }
@@ -115,8 +110,4 @@ async function run() {
 
 run().catch(console.dir);
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-
-module.exports = app;
+module.exports = router;
