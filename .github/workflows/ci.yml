@@ -1,0 +1,58 @@
+name: CI Node.js Pipeline M324
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+      - release/*
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18.x
+
+      # Build and test for the first ticketsystem directory
+      - name: Install dependencies for ticketsystem
+        run: npm install
+        working-directory: ./Code/ticketsystem
+
+      - name: Build ticketsystem
+        run: npm run build
+        working-directory: ./Code/ticketsystem
+
+      - name: Run tests for ticketsystem
+        run: npm test
+        working-directory: ./Code/ticketsystem
+
+      - name: Run integration tests for ticketsystem
+        run: npm run integration-tests
+        working-directory: ./Code/ticketsystem
+
+      # Build and test for the ticketsystem/mitarbeiterAuslesen directory
+      - name: Install dependencies for ticketsystem/mitarbeiterAuslesen
+        run: npm install
+        working-directory: ./Code/ticketsystem/mitarbeiterAuslesen
+
+      - name: Build ticketsystem/mitarbeiterAuslesen
+        run: npm run build
+        working-directory: ./Code/ticketsystem/mitarbeiterAuslesen
+
+      - name: Run tests for ticketsystem/mitarbeiterAuslesen
+        run: npm test
+        working-directory: ./Code/ticketsystem/mitarbeiterAuslesen
+
+      - name: Run integration tests for ticketsystem/mitarbeiterAuslesen
+        run: npm run integration-tests
+        working-directory: ./Code/ticketsystem/mitarbeiterAuslesen
