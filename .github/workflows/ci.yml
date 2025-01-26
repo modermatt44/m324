@@ -12,35 +12,42 @@ on:
       - develop
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: self-hosted
 
     steps:
+      # Checkout Repository
       - uses: actions/checkout@v2
 
+      # Set up Node.js
       - name: Use Node.js 18.x
         uses: actions/setup-node@v1
         with:
           node-version: 18.x
 
-      # Build and test
-      - name: Install dependencies for ticketsystem
+      # Install dependencies
+      - name: Install dependencies
         run: npm install
         working-directory: ./Code/ticketsystem
 
+      # Build project
       - name: Build ticketsystem
         run: npm run build
         working-directory: ./Code/ticketsystem
 
-      - name: Run Jest tests for ticketsystem
+      # Run tests
+      - name: Run Jest tests
         run: npm run testjest
         working-directory: ./Code/ticketsystem
 
-      - name: Run mocha tests for ticketsystem
+      - name: Run Mocha tests
         run: npm run testmocha
         working-directory: ./Code/ticketsystem
 
-      - name: Buid Project and Deploy artifacts
-        run: npm run build
-        working-directory: ./Code/ticketsystem
-
+      # Deploy application
+      - name: Deploy and start application
+        run: |
+          cd ./Code/ticketsystem
+          npm install --production
+          nohup npm run start > app.log 2>&1 &
+      
