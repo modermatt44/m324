@@ -50,5 +50,8 @@ jobs:
         run: |
           cd ./Code/ticketsystem
           npm install
+          ls -la
+          cat ./index.js
+          pm2 ps
           pm2 restart ticketsystemdev
       
