@@ -50,6 +50,5 @@ jobs:
         run: |
           cd ./Code/ticketsystem
           npm install
-          pm2 delete ticketsystem
-          pm2 start npm --name "ticketsystem" -- start
+          pm2 restart ticketsystemdev
       
