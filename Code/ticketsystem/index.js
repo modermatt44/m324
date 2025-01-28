@@ -10,7 +10,7 @@ app.use(mitarbeiterErfassung);
 app.use(mitarbeiterAuslesen);
 app.use(ticketErfassung);
 
-app.get('/', (req, res) => {
+app.get('/test', (req, res) => {
     res.send('Success!');
 });
 
