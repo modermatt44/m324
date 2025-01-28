@@ -48,6 +48,7 @@ jobs:
       - name: Deploy and start application
         run: |
           cd ./Code/ticketsystem
-          npm install --production
-          nohup npm run start > app.log 2>&1 &
+          npm install
+          pm2 delete ticketsystem
+          pm2 start npm --name "ticketsystem" -- start
       
