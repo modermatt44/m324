@@ -48,6 +48,7 @@ jobs:
       # Docker Build
       - name: Build Docker Image
         run: |
+          sudo usermod -aG docker $(whoami)
           sudo docker build -t "$SERVICE_NAME:latest" ./Code/ticketsystem
 
       # Docker Stop and Remove Existing Container
