@@ -10,6 +10,10 @@ app.use(mitarbeiterErfassung);
 app.use(mitarbeiterAuslesen);
 app.use(ticketErfassung);
 
+app.get('/test', (req, res) => {
+    res.send('Success!');
+});
+
 
 app.listen(3000, () => {
   console.log('Server is running on http://localhost:3000');

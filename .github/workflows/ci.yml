@@ -6,13 +6,14 @@ on:
       - develop
       - main
       - release/*
+      - feature/*
   pull_request:
     branches:
       - main
       - develop
 
 jobs:
-  build-and-deploy:
+  build-and-test:
     runs-on: self-hosted
 
     steps:
@@ -43,11 +44,3 @@ jobs:
       - name: Run Mocha tests
         run: npm run testmocha
         working-directory: ./Code/ticketsystem
-
-      # Deploy application
-      - name: Deploy and start application
-        run: |
-          cd ./Code/ticketsystem
-          npm install --production
-          nohup npm run start > app.log 2>&1 &
-      
