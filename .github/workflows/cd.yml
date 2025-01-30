@@ -54,7 +54,8 @@ jobs:
       # Docker Stop and Remove Existing Container
       - name: Stop and Remove Existing Docker Container
         run: |
-          sudo docker stop "$SERVICE_NAME" || true && docker rm "$SERVICE_NAME" || true
+          sudo docker stop "$SERVICE_NAME" || true
+          sudo docker rm "$SERVICE_NAME" || true
 
       # Docker Run New Container
       - name: Run New Docker Container
