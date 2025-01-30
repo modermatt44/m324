@@ -36,7 +36,7 @@ jobs:
           pm2 ps
           if pm2 list | grep -q 'ticketsystemdev'; then
             echo "Restarting ticketsystemdev..."
-            pm2 restart ticketsystemdev
+            pm2 start npm --name "ticketsystemdev" -- start
           else
             echo "Starting ticketsystemdev..."
             pm2 start npm --name ticketsystemdev -- start
