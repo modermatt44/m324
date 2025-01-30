@@ -13,7 +13,7 @@ on:
       - develop
 
 jobs:
-  build-and-deploy:
+  build-and-test:
     runs-on: self-hosted
 
     steps:
@@ -44,14 +44,3 @@ jobs:
       - name: Run Mocha tests
         run: npm run testmocha
         working-directory: ./Code/ticketsystem
-
-      # Deploy application
-      - name: Deploy and start application
-        run: |
-          cd ./Code/ticketsystem
-          npm install
-          ls -la
-          cat ./index.js
-          pm2 ps
-          pm2 restart ticketsystemdev
-      

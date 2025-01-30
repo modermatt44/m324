@@ -1,0 +1,37 @@
+name: CD Node.js Pipeline M324
+
+on:
+  push:
+    branches:
+      - main
+      - release/*
+      - feature/69-cd
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      # Checkout Repository
+      - uses: actions/checkout@v2
+
+      # Set up Node.js
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18.x
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./Code/ticketsystem
+
+      # Deploy application
+      - name: Deploy and start application
+        run: |
+          cd ./Code/ticketsystem
+          npm install
+          ls -la
+          cat ./index.js
+          pm2 ps
+          pm2 restart ticketsystemdev
