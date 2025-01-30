@@ -48,7 +48,6 @@ jobs:
       # Docker Build
       - name: Build Docker Image
         run: |
-          sudo usermod -aG docker $(whoami)
           sudo docker build -t "$SERVICE_NAME:latest" ./Code/ticketsystem
 
       # Docker Stop and Remove Existing Container
@@ -59,4 +58,4 @@ jobs:
       # Docker Run New Container
       - name: Run New Docker Container
         run: |
-          sudo docker run -d --name "$SERVICE_NAME" -p 3000:3000 "$SERVICE_NAME:latest"
+          sudo docker run -d --name "$SERVICE_NAME" -p 8000:3000 "$SERVICE_NAME:latest"
