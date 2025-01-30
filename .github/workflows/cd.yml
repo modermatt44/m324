@@ -39,8 +39,23 @@ jobs:
         run: npm install
         working-directory: ./Code/ticketsystem
 
-      # Deploy application
-      - name: Deploy and start application
+      # Deploy application with PM2
+      - name: Deploy and start application with PM2
         run: |
           pm2 delete "$SERVICE_NAME" || : && pm2 start npm --name "$SERVICE_NAME" -- start
         working-directory: ./Code/ticketsystem
+
+      # Docker Build
+      - name: Build Docker Image
+        run: |
+          docker build -t "$SERVICE_NAME:latest" ./Code/ticketsystem
+
+      # Docker Stop and Remove Existing Container
+      - name: Stop and Remove Existing Docker Container
+        run: |
+          docker stop "$SERVICE_NAME" || true && docker rm "$SERVICE_NAME" || true
+
+      # Docker Run New Container
+      - name: Run New Docker Container
+        run: |
+          docker run -d --name "$SERVICE_NAME" -p 3000:3000 "$SERVICE_NAME:latest"
