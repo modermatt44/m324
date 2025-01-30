@@ -6,7 +6,7 @@ on:
       - develop
       - main
       - release/*
-      - feature/69-cd
+      - feature/*
   pull_request:
     branches:
       - main
