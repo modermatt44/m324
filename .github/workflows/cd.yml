@@ -1,0 +1,62 @@
+name: CD Node.js Pipeline M324
+
+on:
+  push:
+    branches:
+      - main
+      - release/*
+
+env:
+  SERVICE_NAME: "ticketsystemdev"
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      # Checkout Repository
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      # Set up Node.js
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      # Cache dependencies
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./Code/ticketsystem
+
+      # Deploy application with PM2
+      - name: Deploy and start application with PM2
+        run: |
+          pm2 delete "$SERVICE_NAME" || : && pm2 start npm --name "$SERVICE_NAME" -- start
+        working-directory: ./Code/ticketsystem
+
+      # Docker Build
+      - name: Build Docker Image
+        run: |
+          sudo usermod -aG docker $(whoami)
+          sudo docker build -t "$SERVICE_NAME:latest" ./Code/ticketsystem
+
+      # Docker Stop and Remove Existing Container
+      - name: Stop and Remove Existing Docker Container
+        run: |
+          sudo docker stop "$SERVICE_NAME" || true
+          sudo docker rm "$SERVICE_NAME" || true
+
+      # Docker Run New Container
+      - name: Run New Docker Container
+        run: |
+          sudo docker run -d --name "$SERVICE_NAME" -p 8000:3000 "$SERVICE_NAME:latest"
