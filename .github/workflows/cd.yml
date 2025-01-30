@@ -7,19 +7,32 @@ on:
       - release/*
       - feature/69-cd
 
+env:
+  SERVICE_NAME: "ticketsystemdev"
+
 jobs:
   deploy:
     runs-on: self-hosted
 
     steps:
       # Checkout Repository
-      - uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
       # Set up Node.js
       - name: Use Node.js 18.x
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: 18.x
+
+      # Cache dependencies
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       # Install dependencies
       - name: Install dependencies
@@ -29,15 +42,14 @@ jobs:
       # Deploy application
       - name: Deploy and start application
         run: |
-          cd ./Code/ticketsystem
-          npm install
           ls -la
           cat ./index.js
           pm2 ps
-          if pm2 list | grep -q 'ticketsystemdev'; then
-            echo "Restarting ticketsystemdev..."
-            pm2 start npm --name "ticketsystemdev" -- start
+          if pm2 list | grep -q "$SERVICE_NAME"; then
+            echo "Restarting $SERVICE_NAME..."
+            pm2 restart "$SERVICE_NAME"
           else
-            echo "Starting ticketsystemdev..."
-            pm2 start npm --name ticketsystemdev -- start
+            echo "Starting $SERVICE_NAME..."
+            pm2 start npm --name "$SERVICE_NAME" -- start
           fi
+        working-directory: ./Code/ticketsystem
