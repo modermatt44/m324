@@ -5,7 +5,6 @@ on:
     branches:
       - main
       - release/*
-      - feature/69-cd
 
 env:
   SERVICE_NAME: "ticketsystemdev"
