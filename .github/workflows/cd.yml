@@ -34,4 +34,10 @@ jobs:
           ls -la
           cat ./index.js
           pm2 ps
-          pm2 restart ticketsystemdev
+          if pm2 list | grep -q 'ticketsystemdev'; then
+            echo "Restarting ticketsystemdev..."
+            pm2 restart ticketsystemdev
+          else
+            echo "Starting ticketsystemdev..."
+            pm2 start npm --name ticketsystemdev -- start
+          fi
