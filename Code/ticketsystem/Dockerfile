@@ -2,11 +2,11 @@ FROM node:18
 
 WORKDIR /usr/src/app
 
-COPY ./Code/ticketsystem/package*.json ./
+COPY ./package*.json ./
 
 RUN npm install
 
-COPY ./Code/ticketsystem/ .
+COPY . .
 
 EXPOSE 3000
 
